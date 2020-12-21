@@ -1,0 +1,76 @@
+version: '2.3'
+
+services:
+  pipeline:
+    image: ninai/pipeline:latest
+    volumes:
+      - /mnt/:/mnt/
+#      - /home/jiakun/code/dev/jiakundev/pipeline_config.json:/data/pipeline_config.json
+      - /home/jiakun/data/jiakundata:/data/data
+    env_file: .env
+    entrypoint:
+      - /bin/bash
+    dns:
+      - 128.249.38.101
+      - 128.249.38.102
+#    environment:
+#      - DISPLAY=10.21.18.169:0
+
+  pipeline_gpu:
+    runtime: nvidia
+    image: ninai/pipeline:tf-gpu
+    volumes:
+      - /mnt/:/mnt/
+      - /home/jiakun/code/dev/jiakundev/pipeline_config.json:/data/pipeline_config.json
+      - /home/jiakun/data/jiakundata:/data/data
+    env_file: .env
+    entrypoint:
+      - /bin/bash
+
+  stimuli:
+    image: ninai/stimuli:latest
+    volumes:
+      - /mnt/:/mnt/
+#      - /home/jiakun/code/dev/jiakundev/pipeline_config.json:/data/pipeline_config.json
+      - /home/jiakun/data/jiakundata:/data/data
+    env_file: .env
+    entrypoint:
+      - /bin/bash
+    dns:
+      - 128.249.38.101
+      - 128.249.38.102
+
+  stimline:
+    image: ninai/stimulus-pipeline:latest
+    volumes:
+      - /mnt/:/mnt/
+      - /home/jiakun/code/dev/jiakundev/pipeline_config.json:/data/pipeline_config.json
+      - /home/jiakun/code/dev/stimuli:/data/stimuli
+      - /home/jiakun/data/jiakundata:/data/data
+    env_file: .env
+    entrypoint:
+      - /bin/bash
+
+  hw:
+    image: jiakunf/jiakun_analysis
+    volumes:
+      - /home/jiakun/classes/data_structure_2020_dec/:/data/jiakun
+    mem_reservation: 2g
+    env_file: .env
+    entrypoint:
+      - /bin/bash
+
+  hw_notebook:
+    image: jiakunf/jiakun_jupyter
+    volumes:
+      - /mnt/:/mnt/
+      - /home/jiakun/code/dev/jiakundev:/data/jiakun
+      - /home/jiakun/code/dev/jiakundev/jupyter:/notebooks
+      - /home/jiakun/data/jiakundata:/data/jiakun/data
+      - /home/jiakun/code/dev/stimuli:/data/stimuli
+    ports:
+      - 9999:8888
+    env_file: .env
+
+
+
